@@ -88,7 +88,10 @@ class Game {
   _enterCurrentRoom() {
     const room = this._rooms.get(this._currentRoomId);
     room.ensurePopulated(this._enemyDefs);
-    for (const pet of this._player.pets) pet.placeRandomly(room.bounds);
+    for (const pet of this._player.pets) {
+      pet.placeRandomly(room.bounds);
+      pet.resetForRoom(); // kotek/pet ma n=level użyć NA POKÓJ - odświeżamy limit przy każdym wejściu
+    }
     this._playerProjectiles = [];
     this._enemyProjectiles = [];
   }
@@ -160,7 +163,7 @@ class Game {
     for (const enemy of room.enemies) {
       if (!enemy.isMarkedForRemoval) enemy.update(dtMs, context);
     }
-    room.removeDeadEnemies();
+    this._processEnemyDeaths(room, room.removeDeadEnemies());
 
     for (const p of this._playerProjectiles) p.update(dtMs, bounds);
     for (const p of this._enemyProjectiles) p.update(dtMs, bounds);
@@ -203,7 +206,18 @@ class Game {
       }
     }
 
-    room.removeDeadEnemies();
+    this._processEnemyDeaths(room, room.removeDeadEnemies());
+  }
+
+  /** Klucz do bossa wypada tylko z minibossa w wyznaczonym pokoju, tylko raz (sekcja 5. info.md). */
+  _processEnemyDeaths(room, removedEnemies) {
+    for (const enemy of removedEnemies) {
+      if (room.shouldDropKeyFrom(enemy)) {
+        room.markKeyDropped();
+        this._player.addKey();
+        this._showMessage('Miniboss upuścił klucz do bossa!');
+      }
+    }
   }
 
   _resolveChests(room) {

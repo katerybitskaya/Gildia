@@ -3,8 +3,9 @@ import { clamp, frameFactor } from '../utils/MathUtils.js';
 /**
  * Pet (sekcja 5. info.md): unikalny, nieśmiertelny, nieatakowalny, nie atakuje wrogów.
  * Chodzi losowo po bieżącym pokoju. Dotknięcie przez gracza zużywa jedno "użycie"
- * (ładunek) efektu; liczba ładunków = poziom peta. Poziom rośnie przy kolejnym
- * wylosowaniu tego samego peta ze skrzynki.
+ * (ładunek) efektu; limit ładunków = poziom peta, ale NA POKÓJ - odświeża się przy
+ * każdym wejściu do nowego pokoju (patrz resetForRoom(), wołane z Game._enterCurrentRoom).
+ * Poziom rośnie przy kolejnym wylosowaniu tego samego peta ze skrzynki.
  */
 class Pet {
   constructor(def, level = 1) {
@@ -37,7 +38,12 @@ class Pet {
 
   levelUp() {
     this._level += 1;
-    this._charges += 1;
+    this._charges = this._level; // od razu odblokuj pełny limit użyć na bieżący pokój
+  }
+
+  /** Wywoływane przy każdym wejściu do pokoju - limit użyć = poziom peta, na nowo. */
+  resetForRoom() {
+    this._charges = this._level;
   }
 
   canUse(now) {

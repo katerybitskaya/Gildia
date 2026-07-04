@@ -24,7 +24,8 @@ class Player {
       shotSpeed: 7,
       invincible: false,
       projectileCount: 1,
-      projectileBounce: false
+      projectileBounce: false,
+      projectileMaxBounces: 3 // limit dla "Soczewki Rykoszetu" - inaczej pocisk odbijałby się w nieskończoność
     };
 
     this._lastShotAt = -Infinity;
@@ -84,7 +85,8 @@ class Player {
         speed: this._stats.shotSpeed,
         damage: this._stats.damage,
         owner: 'player',
-        bounce: this._stats.projectileBounce === true
+        bounce: this._stats.projectileBounce === true,
+        maxBounces: this._stats.projectileMaxBounces
       }));
     }
     return projectiles;

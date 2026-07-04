@@ -21,7 +21,7 @@
     "id": "ricochet_lens",
     "name": "Soczewka Rykoszetu",
     "type": "passive",
-    "description": "Pociski odbijają się od ścian zamiast znikać.",
+    "description": "Pociski odbijają się od ścian zamiast znikać (maks. 3 odbicia).",
     "effect": { "stat": "projectileBounce", "modifier": "set", "value": true },
     "spritePath": null,
     "_spriteNote": "TODO: ikona przedmiotu 32x32px"
@@ -50,7 +50,7 @@
     "type": "consumable",
     "description": "Otwiera drzwi do pokoju bossa. Wypada z minibossa.",
     "effect": { "action": "unlockBossDoor" },
-    "spritePath": null,
+    "spritePath": "/sprites/key.png",
     "_spriteNote": "TODO: ikona klucza 32x32px"
   },
   {

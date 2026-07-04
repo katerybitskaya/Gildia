@@ -24,6 +24,7 @@ class Room {
     this._enemies = [];
     this._chests = [];
     this._traps = [];
+    this._keyDropped = false; // zabezpiecza przed wypuszczeniem klucza więcej niż raz z tego pokoju
   }
 
   get id() { return this._id; }
@@ -85,8 +86,23 @@ class Room {
     return damage;
   }
 
+  /** Usuwa martwych wrogów z pokoju i zwraca ich listę (żeby Game mógł np. przyznać loot). */
   removeDeadEnemies() {
+    const removed = this._enemies.filter((e) => e.isMarkedForRemoval);
     this._enemies = this._enemies.filter((e) => !e.isMarkedForRemoval);
+    return removed;
+  }
+
+  /**
+   * Klucz do bossa wypada tylko z minibossa w JEDNYM, losowo wyznaczonym pokoju
+   * (sekcja 5. info.md: "jeśli więcej to z jednego losowego") i tylko raz.
+   */
+  shouldDropKeyFrom(enemy) {
+    return this._dropsKey && enemy.isMiniboss && !this._keyDropped;
+  }
+
+  markKeyDropped() {
+    this._keyDropped = true;
   }
 }
 

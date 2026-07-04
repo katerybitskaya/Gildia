@@ -6,10 +6,10 @@
     "_spriteNote": "TODO: spritesheet gracza, sugerowana klatka 32x32px, kierunki 8-way"
   },
   "tiles": {
-    "floor": "/sprites/Pokój_1.png",
-    "wall": null,
+    "floor": "/sprites/floor1.png",
+    "wall": "/sprites/Pokój_1.png",
     "door": "/sprites/Drzwi_1-2.png",
-    "doorLocked": "/sprites/Drzwi_Zamknięte.png",
+    "doorLocked": "/sprites/drzwi_zamkniete.png",
     "_spriteNote": "TODO: tileset podłogi/ścian/drzwi, uniwersalny pod różne rozdzielczości (skalowany canvas)"
   },
   "chest": {
