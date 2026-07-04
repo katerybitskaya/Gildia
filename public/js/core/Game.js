@@ -3,6 +3,7 @@ import Player from '../entities/Player.js';
 import ItemFactory from '../factories/ItemFactory.js';
 import PetFactory from '../factories/PetFactory.js';
 import HUD from '../ui/HUD.js';
+import SpriteLoader from '../utils/SpriteLoader.js';
 
 /**
  * Główna pętla gry: pobiera dane z backendu (labirynt + definicje z JSON),
@@ -22,6 +23,7 @@ class Game {
     this._enemyDefs = [];
     this._itemDefs = [];
     this._petDefs = [];
+    this._sprites = {};
 
     this._playerProjectiles = [];
     this._enemyProjectiles = [];
@@ -37,19 +39,35 @@ class Game {
   }
 
   async start() {
-    const [dungeon, enemyDefs, itemDefs, petDefs] = await Promise.all([
+    const [dungeon, enemyDefs, itemDefs, petDefs, sprites] = await Promise.all([
       fetch(`/api/dungeon/new?level=${this._level}`).then((r) => r.json()),
       fetch('/api/enemies').then((r) => r.json()),
       fetch('/api/items').then((r) => r.json()),
-      fetch('/api/pets').then((r) => r.json())
+      fetch('/api/pets').then((r) => r.json()),
+      fetch('/api/sprites').then((r) => r.json())
     ]);
 
     this._enemyDefs = enemyDefs;
     this._itemDefs = itemDefs;
     this._petDefs = petDefs;
+    this._sprites = sprites;
 
     this._loadDungeon(dungeon);
     requestAnimationFrame((t) => this._loop(t));
+  }
+
+  /**
+   * Rysuje obrazek, jeśli ścieżka jest ustawiona i grafika już się załadowała.
+   * W przeciwnym razie woła fallbackFn (kolorowy placeholder) - dzięki temu
+   * podmiana grafiki w data/*.json działa "od ręki", bez zmian w kodzie.
+   */
+  _drawSprite(path, x, y, w, h, fallbackFn) {
+    const img = path ? SpriteLoader.get(path) : null;
+    if (img) {
+      this._ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+    } else {
+      fallbackFn();
+    }
   }
 
   _loadDungeon(dungeon) {
@@ -301,38 +319,60 @@ class Game {
   _renderRoom(room) {
     const ctx = this._ctx;
     const b = room.bounds;
+    const tiles = this._sprites.tiles || {};
 
     ctx.fillStyle = '#14141f';
     ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
-    ctx.fillStyle = room.type === 'boss' ? '#3a1a1a' : room.type === 'miniboss' ? '#3a2a12' : '#23233a';
-    ctx.fillRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    // Ściany - grafika rysowana jako "rama" pod podłogą, żeby nie trzeba było kaflować ręcznie
+    const wallImg = tiles.wall ? SpriteLoader.get(tiles.wall) : null;
+    if (wallImg) {
+      const margin = 40;
+      ctx.drawImage(wallImg, b.minX - margin, b.minY - margin, (b.maxX - b.minX) + margin * 2, (b.maxY - b.minY) + margin * 2);
+    }
 
-    ctx.strokeStyle = '#555';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    // Podłoga
+    const floorImg = tiles.floor ? SpriteLoader.get(tiles.floor) : null;
+    if (floorImg) {
+      ctx.drawImage(floorImg, b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    } else {
+      ctx.fillStyle = room.type === 'boss' ? '#3a1a1a' : room.type === 'miniboss' ? '#3a2a12' : '#23233a';
+      ctx.fillRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    }
+
+    if (!wallImg) {
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    }
 
     for (const door of room.doors) {
       const c = door.center(b);
-      ctx.fillStyle = door.locked ? '#7a1f1f' : '#c9a227';
-      ctx.beginPath();
-      ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      const doorPath = door.locked ? tiles.doorLocked : tiles.door;
+      this._drawSprite(doorPath, c.x, c.y, 48, 48, () => {
+        ctx.fillStyle = door.locked ? '#7a1f1f' : '#c9a227';
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
     }
   }
 
   _renderChests(room) {
     const ctx = this._ctx;
+    const chestSprites = this._sprites.chest || {};
     for (const chest of room.chests) {
       if (chest.opened) continue;
-      ctx.fillStyle = '#a5682a';
-      ctx.fillRect(chest.x - chest.radius, chest.y - chest.radius, chest.radius * 2, chest.radius * 1.5);
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(chest.x - chest.radius, chest.y - chest.radius, chest.radius * 2, chest.radius * 1.5);
+      this._drawSprite(chestSprites.closed, chest.x, chest.y, chest.radius * 2, chest.radius * 1.5, () => {
+        ctx.fillStyle = '#a5682a';
+        ctx.fillRect(chest.x - chest.radius, chest.y - chest.radius, chest.radius * 2, chest.radius * 1.5);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(chest.x - chest.radius, chest.y - chest.radius, chest.radius * 2, chest.radius * 1.5);
+      });
     }
   }
 
@@ -350,13 +390,16 @@ class Game {
     const ctx = this._ctx;
     for (const enemy of room.enemies) {
       if (enemy.isMarkedForRemoval) continue;
-      ctx.beginPath();
-      ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-      ctx.fillStyle = enemy.isBoss ? '#8e2de2' : enemy.isMiniboss ? '#d35400' : '#c0392b';
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+
+      this._drawSprite(enemy.spritePath, enemy.x, enemy.y, enemy.radius * 2, enemy.radius * 2, () => {
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+        ctx.fillStyle = enemy.isBoss ? '#8e2de2' : enemy.isMiniboss ? '#d35400' : '#c0392b';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
 
       const barWidth = enemy.radius * 2;
       const pct = Math.max(0, enemy.hp) / enemy.maxHp;
@@ -370,42 +413,53 @@ class Game {
   _renderPets() {
     const ctx = this._ctx;
     for (const pet of this._player.pets) {
-      ctx.beginPath();
-      ctx.arc(pet.x, pet.y, pet.radius, 0, Math.PI * 2);
-      ctx.fillStyle = '#f39c12';
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.stroke();
+      this._drawSprite(pet.spritePath, pet.x, pet.y, pet.radius * 2, pet.radius * 2, () => {
+        ctx.beginPath();
+        ctx.arc(pet.x, pet.y, pet.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#f39c12';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.stroke();
+      });
     }
   }
 
   _renderProjectiles() {
     const ctx = this._ctx;
-    ctx.fillStyle = '#f1c40f';
+    const projSprites = this._sprites.projectile || {};
+
     for (const p of this._playerProjectiles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fill();
+      this._drawSprite(projSprites.player, p.x, p.y, p.radius * 2, p.radius * 2, () => {
+        ctx.fillStyle = '#f1c40f';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
     }
-    ctx.fillStyle = '#e74c3c';
     for (const p of this._enemyProjectiles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fill();
+      this._drawSprite(projSprites.enemy, p.x, p.y, p.radius * 2, p.radius * 2, () => {
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
     }
   }
 
   _renderPlayer() {
     const ctx = this._ctx;
     const p = this._player;
+    const playerSprites = this._sprites.player || {};
 
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = p.isInvincibleNow ? 'rgba(52,152,219,0.6)' : '#3498db';
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    this._drawSprite(playerSprites.idle, p.x, p.y, p.radius * 2, p.radius * 2, () => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.isInvincibleNow ? 'rgba(52,152,219,0.6)' : '#3498db';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
 
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 3;

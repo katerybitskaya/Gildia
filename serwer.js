@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/data', express.static(path.join(__dirname, 'data')));
 
+// Grafiki (data/sprites/*) dostępne pod /sprites/..., zgodnie ze ścieżkami wpisywanymi w data/*.json
+app.use('/sprites', express.static(path.join(__dirname, 'data', 'sprites')));
+
 // Backend API: generowanie labiryntu, definicje wrogów/przedmiotów/petów/grafik
 app.use('/api', apiRouter);
 
