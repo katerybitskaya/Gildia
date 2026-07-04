@@ -62,8 +62,8 @@ class Room {
     };
   }
 
-  findDoorAt(px, py) {
-    return this._doors.find((d) => d.isPlayerAt(px, py, ROOM_BOUNDS)) || null;
+  findDoorAt(px, py, playerRadius) {
+    return this._doors.find((d) => d.isPlayerAt(px, py, ROOM_BOUNDS, playerRadius)) || null;
   }
 
   addTrap(trap) { this._traps.push(trap); }

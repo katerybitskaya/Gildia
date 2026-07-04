@@ -5,6 +5,16 @@ import PetFactory from '../factories/PetFactory.js';
 import HUD from '../ui/HUD.js';
 import SpriteLoader from '../utils/SpriteLoader.js';
 
+// Grafika drzwi jest rysowana tak, jakby domyślnie leżała na DOLNEJ ścianie (south).
+// Dla pozostałych ścian obracamy ją o odpowiedni kąt, żeby otwór pasował do orientacji ściany.
+// Jeśli po podmianie grafiki drzwi wyglądają "na boku", zamień znaki +/- poniżej.
+const DOOR_ROTATIONS = {
+  south: Math.PI,
+  north: 0,
+  west: -Math.PI / 2,
+  east: Math.PI / 2
+};
+
 /**
  * Główna pętla gry: pobiera dane z backendu (labirynt + definicje z JSON),
  * obsługuje input, aktualizuje stan i renderuje bieżący pokój (sekcja 3. info.md:
@@ -60,11 +70,24 @@ class Game {
    * Rysuje obrazek, jeśli ścieżka jest ustawiona i grafika już się załadowała.
    * W przeciwnym razie woła fallbackFn (kolorowy placeholder) - dzięki temu
    * podmiana grafiki w data/*.json działa "od ręki", bez zmian w kodzie.
+   * Opcjonalny `rotation` (w radianach) obraca obrazek wokół jego środka (x, y) -
+   * używane m.in. do obracania drzwi zależnie od tego, na której ścianie leżą.
+   * Opcjonalny `flipX` odbija obrazek w poziomie - używane do odwracania bohatera
+   * w zależności od tego, czy idzie w lewo, czy w prawo.
    */
-  _drawSprite(path, x, y, w, h, fallbackFn) {
+  _drawSprite(path, x, y, w, h, fallbackFn, rotation = 0, flipX = false) {
     const img = path ? SpriteLoader.get(path) : null;
     if (img) {
-      this._ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+      if (rotation || flipX) {
+        this._ctx.save();
+        this._ctx.translate(x, y);
+        if (rotation) this._ctx.rotate(rotation);
+        if (flipX) this._ctx.scale(-1, 1);
+        this._ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        this._ctx.restore();
+      } else {
+        this._ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+      }
     } else {
       fallbackFn();
     }
@@ -270,7 +293,7 @@ class Game {
   }
 
   _resolveDoors(room) {
-    const door = room.findDoorAt(this._player.x, this._player.y);
+    const door = room.findDoorAt(this._player.x, this._player.y, this._player.radius);
     if (!door) return;
 
     if (door.locked) {
@@ -300,10 +323,15 @@ class Game {
     const cx = (b.minX + b.maxX) / 2;
     const cy = (b.minY + b.maxY) / 2;
 
-    if (direction === 'north') this._player.setPosition(cx, b.maxY - 40);
-    else if (direction === 'south') this._player.setPosition(cx, b.minY + 40);
-    else if (direction === 'west') this._player.setPosition(b.maxX - 40, cy);
-    else if (direction === 'east') this._player.setPosition(b.minX + 40, cy);
+    // Odstęp od przeciwległych drzwi MUSI być większy niż strefa wykrywania drzwi
+    // (promień gracza + 12, patrz Door.isPlayerAt), inaczej gracz ląduje od razu
+    // w strefie drzwi prowadzących z powrotem i grę "rzuca" między pokojami w kółko.
+    const offset = this._player.radius + 30;
+
+    if (direction === 'north') this._player.setPosition(cx, b.maxY - offset);
+    else if (direction === 'south') this._player.setPosition(cx, b.minY + offset);
+    else if (direction === 'west') this._player.setPosition(b.maxX - offset, cy);
+    else if (direction === 'east') this._player.setPosition(b.minX + offset, cy);
   }
 
   _showMessage(text) {
@@ -363,6 +391,7 @@ class Game {
     for (const door of room.doors) {
       const c = door.center(b);
       const doorPath = door.locked ? tiles.doorLocked : tiles.door;
+      const rotation = DOOR_ROTATIONS[door.direction] || 0;
       this._drawSprite(doorPath, c.x, c.y, 48, 48, () => {
         ctx.fillStyle = door.locked ? '#7a1f1f' : '#c9a227';
         ctx.beginPath();
@@ -371,7 +400,7 @@ class Game {
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.stroke();
-      });
+      }, rotation);
     }
   }
 
@@ -465,7 +494,11 @@ class Game {
     const p = this._player;
     const playerSprites = this._sprites.player || {};
 
-    this._drawSprite(playerSprites.idle, p.x, p.y, p.radius * 2, p.radius * 2, () => {
+    // Animacja: klatka "walk" podczas ruchu, "idle" w bezruchu; odbicie w poziomie
+    // zależnie od tego, czy bohater ostatnio szedł w lewo, czy w prawo.
+    const spritePath = p.isMoving ? (playerSprites.walk || playerSprites.idle) : playerSprites.idle;
+
+    this._drawSprite(spritePath, p.x, p.y, p.radius * 2, p.radius * 2, () => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fillStyle = p.isInvincibleNow ? 'rgba(52,152,219,0.6)' : '#3498db';
@@ -473,14 +506,7 @@ class Game {
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2;
       ctx.stroke();
-    });
-
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(p.x + Math.cos(p.facingAngle) * (p.radius + 10), p.y + Math.sin(p.facingAngle) * (p.radius + 10));
-    ctx.stroke();
+    }, 0, p.facingLeft);
   }
 
   _renderGameOver() {

@@ -21,7 +21,7 @@ class Pet {
     this._y = 0;
     this._angle = Math.random() * Math.PI * 2;
     this._nextTurnAt = 0;
-    this._radius = 10;
+    this._radius = 20;
     this._lastUsedAt = -Infinity;
   }
 

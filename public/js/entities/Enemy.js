@@ -19,7 +19,7 @@ class Enemy {
     this._y = y;
     this._isBoss = !!def.isBoss;
     this._isMiniboss = !!def.isMiniboss;
-    this._radius = this._isBoss ? 40 : this._isMiniboss ? 28 : 16;
+    this._radius = this._isBoss ? 80 : this._isMiniboss ? 56 : 36;
     this._def = def;
     this._spritePath = def.spritePath; // TODO: patrz _spriteNote w data/enemies.json
 

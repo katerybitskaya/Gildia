@@ -10,8 +10,10 @@ class Player {
   constructor(x, y) {
     this._x = x;
     this._y = y;
-    this._radius = 16;
+    this._radius = 36;
     this._facingAngle = -Math.PI / 2; // domyślnie patrzy w górę
+    this._isMoving = false; // do wyboru sprite'u idle/walk
+    this._facingLeft = false; // do odbicia sprite'u w poziomie (lewo/prawo)
 
     this._maxHp = 100;
     this._hp = 100;
@@ -47,6 +49,8 @@ class Player {
   get pets() { return this._pets; }
   get passiveItems() { return this._passiveItems; }
   get isInvincibleNow() { return this._stats.invincible || this._invincibilityTimerMs > 0; }
+  get isMoving() { return this._isMoving; }
+  get facingLeft() { return this._facingLeft; }
 
   setPosition(x, y) {
     this._x = x;
@@ -55,11 +59,20 @@ class Player {
 
   /** dx, dy w zakresie [-1, 0, 1] - wynik wejścia z klawiatury (8 kierunków). */
   move(dx, dy, dtMs, bounds) {
-    if (dx === 0 && dy === 0) return;
+    if (dx === 0 && dy === 0) {
+      this._isMoving = false;
+      return;
+    }
+    this._isMoving = true;
+
     const len = Math.hypot(dx, dy) || 1;
     const nx = dx / len;
     const ny = dy / len;
     this._facingAngle = Math.atan2(ny, nx);
+
+    // Przy czysto pionowym ruchu (góra/dół) zachowujemy poprzedni kierunek odbicia sprite'u.
+    if (dx < 0) this._facingLeft = true;
+    else if (dx > 0) this._facingLeft = false;
 
     const speed = this._stats.moveSpeed * frameFactor(dtMs);
     this._x = clamp(this._x + nx * speed, bounds.minX + this._radius, bounds.maxX - this._radius);

@@ -3,15 +3,21 @@
     "id": "intern_cat",
     "name": "Kotek Stażysta",
     "description": "Losowo chodzi po pokoju. Dotknięcie leczy gracza. Ilość użyć = poziom peta.",
-    "effect": { "action": "heal", "value": 15 },
-    "spritePath": null,
+    "effect": {
+      "action": "heal",
+      "value": 15
+    },
+    "spritePath": "/sprites/blink_cat_tail_up.png",
     "_spriteNote": "TODO: grafika kotka, miniatura wyświetlana pomniejszona o 80% na pasku bocznym"
   },
   {
     "id": "lucky_hamster",
     "name": "Szczęśliwy Chomik",
     "description": "Losowo chodzi po pokoju. Dotknięcie daje tymczasowy bonus do szansy na dodatkowy przedmiot ze skrzynki.",
-    "effect": { "action": "extraChestChance", "value": 0.1 },
+    "effect": {
+      "action": "extraChestChance",
+      "value": 0.1
+    },
     "spritePath": null,
     "_spriteNote": "TODO: grafika chomika, miniatura wyświetlana pomniejszona o 80% na pasku bocznym"
   }

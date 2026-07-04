@@ -7,7 +7,7 @@
     "damage": 5,
     "speed": 1.6,
     "contactDamageCooldownMs": 800,
-    "spritePath": null,
+    "spritePath": "/sprites/ghost_reaper.png",
     "_spriteNote": "TODO: grafika szczura, ok. 32x32px, animacja biegu",
     "isMiniboss": false,
     "isBoss": false
@@ -22,7 +22,7 @@
     "preferredDistance": 220,
     "projectileSpeed": 4.5,
     "fireRateMs": 1500,
-    "spritePath": null,
+    "spritePath": "/sprites/ghost_basic.png",
     "_spriteNote": "TODO: grafika łucznika trzymającego dystans, 32x32px",
     "isMiniboss": false,
     "isBoss": false
@@ -36,7 +36,7 @@
     "speed": 2.1,
     "trapDamage": 6,
     "trapDurationMs": 4000,
-    "spritePath": null,
+    "spritePath": "/sprites/ghost_red_mushroom.png",
     "_spriteNote": "TODO: grafika uciekającego wroga + grafika pułapki (osobny sprite)",
     "isMiniboss": false,
     "isBoss": false

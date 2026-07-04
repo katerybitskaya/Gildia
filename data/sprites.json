@@ -1,19 +1,19 @@
 {
   "_comment": "Wszystkie ścieżki do grafik ładowane są stąd. Jeśli spritePath == null, silnik rysuje placeholder (kolorowy kształt). Podmień ścieżki, gdy grafiki będą gotowe.",
   "player": {
-    "idle": null,
-    "walk": null,
+    "idle": "/sprites/morrow_hero.png",
+    "walk": "/sprites/morrow_hero_move.png",
     "_spriteNote": "TODO: spritesheet gracza, sugerowana klatka 32x32px, kierunki 8-way"
   },
   "tiles": {
-    "floor": "/sprites/floor1.png",
-    "wall": "/sprites/Pokój_1.png",
-    "door": "/sprites/Drzwi_1-2.png",
-    "doorLocked": "/sprites/drzwi_zamkniete.png",
+    "floor": "/sprites/floor_default.png",
+    "wall": "/sprites/room_1.png",
+    "door": "/sprites/door_1-2.png",
+    "doorLocked": "/sprites/door_closed.png",
     "_spriteNote": "TODO: tileset podłogi/ścian/drzwi, uniwersalny pod różne rozdzielczości (skalowany canvas)"
   },
   "chest": {
-    "closed": null,
+    "closed": "/sprites/chest.png",
     "open": null,
     "_spriteNote": "TODO: grafika skrzynki zamkniętej/otwartej 48x48px"
   },

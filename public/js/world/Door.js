@@ -26,10 +26,15 @@ class Door {
     }
   }
 
-  isPlayerAt(px, py, bounds) {
+  /**
+   * playerRadius jest wymagany, bo Player.move() nie pozwala podejść do ściany bliżej
+   * niż na swój promień - jeśli próg wykrywania drzwi byłby mniejszy niż promień gracza,
+   * drzwi stałyby się fizycznie nieosiągalne (dokładnie ten błąd po powiększeniu bohatera).
+   */
+  isPlayerAt(px, py, bounds, playerRadius = 16) {
     const c = this.center(bounds);
     const halfSpan = 45;
-    const threshold = 26;
+    const threshold = playerRadius + 12;
     if (this._direction === 'north') return py <= bounds.minY + threshold && Math.abs(px - c.x) < halfSpan;
     if (this._direction === 'south') return py >= bounds.maxY - threshold && Math.abs(px - c.x) < halfSpan;
     if (this._direction === 'west') return px <= bounds.minX + threshold && Math.abs(py - c.y) < halfSpan;
