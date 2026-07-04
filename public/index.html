@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gildia — игра</title>
+  <title>Escape the wsiz</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="hud">
-    <span id="playerCount">Игроков: 0</span>
-  </div>
   <canvas id="game" width="800" height="600"></canvas>
+  <div id="controls-hint">WASD - ruch, Spacja - strzał</div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

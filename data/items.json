@@ -1,0 +1,65 @@
+[
+  {
+    "id": "rusty_nail",
+    "name": "Zardzewiały Gwóźdź",
+    "type": "passive",
+    "description": "Zwiększa obrażenia ataku podstawowego.",
+    "effect": { "stat": "damage", "modifier": "add", "value": 2 },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona przedmiotu 32x32px"
+  },
+  {
+    "id": "fast_boots",
+    "name": "Szybkie Buty",
+    "type": "passive",
+    "description": "Zwiększa szybkość ruchu.",
+    "effect": { "stat": "moveSpeed", "modifier": "add", "value": 0.8 },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona przedmiotu 32x32px"
+  },
+  {
+    "id": "ricochet_lens",
+    "name": "Soczewka Rykoszetu",
+    "type": "passive",
+    "description": "Pociski odbijają się od ścian zamiast znikać.",
+    "effect": { "stat": "projectileBounce", "modifier": "set", "value": true },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona przedmiotu 32x32px"
+  },
+  {
+    "id": "twin_shot",
+    "name": "Bliźniacza Lufa",
+    "type": "passive",
+    "description": "Dodaje dodatkowy pocisk do każdego strzału.",
+    "effect": { "stat": "projectileCount", "modifier": "add", "value": 1 },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona przedmiotu 32x32px"
+  },
+  {
+    "id": "quick_trigger",
+    "name": "Szybki Spust",
+    "type": "passive",
+    "description": "Zwiększa szybkostrzelność.",
+    "effect": { "stat": "fireRate", "modifier": "multiply", "value": 0.8 },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona przedmiotu 32x32px"
+  },
+  {
+    "id": "key",
+    "name": "Klucz",
+    "type": "consumable",
+    "description": "Otwiera drzwi do pokoju bossa. Wypada z minibossa.",
+    "effect": { "action": "unlockBossDoor" },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona klucza 32x32px"
+  },
+  {
+    "id": "healing_cat",
+    "name": "Kotek Leczący",
+    "type": "consumable",
+    "description": "Natychmiast leczy gracza.",
+    "effect": { "action": "heal", "value": 30 },
+    "spritePath": null,
+    "_spriteNote": "TODO: ikona kotka 32x32px"
+  }
+]

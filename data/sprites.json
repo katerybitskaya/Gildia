@@ -1,0 +1,25 @@
+{
+  "_comment": "Wszystkie ścieżki do grafik ładowane są stąd. Jeśli spritePath == null, silnik rysuje placeholder (kolorowy kształt). Podmień ścieżki, gdy grafiki będą gotowe.",
+  "player": {
+    "idle": null,
+    "walk": null,
+    "_spriteNote": "TODO: spritesheet gracza, sugerowana klatka 32x32px, kierunki 8-way"
+  },
+  "tiles": {
+    "floor": null,
+    "wall": null,
+    "door": null,
+    "doorLocked": null,
+    "_spriteNote": "TODO: tileset podłogi/ścian/drzwi, uniwersalny pod różne rozdzielczości (skalowany canvas)"
+  },
+  "chest": {
+    "closed": null,
+    "open": null,
+    "_spriteNote": "TODO: grafika skrzynki zamkniętej/otwartej 48x48px"
+  },
+  "projectile": {
+    "player": null,
+    "enemy": null,
+    "_spriteNote": "TODO: grafiki pocisków gracza i wrogów"
+  }
+}

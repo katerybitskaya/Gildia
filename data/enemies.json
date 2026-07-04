@@ -1,0 +1,72 @@
+[
+  {
+    "id": "rat",
+    "name": "Szczur",
+    "behavior": "melee",
+    "hp": 20,
+    "damage": 5,
+    "speed": 1.6,
+    "contactDamageCooldownMs": 800,
+    "spritePath": null,
+    "_spriteNote": "TODO: grafika szczura, ok. 32x32px, animacja biegu",
+    "isMiniboss": false,
+    "isBoss": false
+  },
+  {
+    "id": "archer",
+    "name": "Łucznik",
+    "behavior": "shooter",
+    "hp": 15,
+    "damage": 8,
+    "speed": 1.0,
+    "preferredDistance": 220,
+    "projectileSpeed": 4.5,
+    "fireRateMs": 1500,
+    "spritePath": null,
+    "_spriteNote": "TODO: grafika łucznika trzymającego dystans, 32x32px",
+    "isMiniboss": false,
+    "isBoss": false
+  },
+  {
+    "id": "coward",
+    "name": "Tchórz",
+    "behavior": "flee",
+    "hp": 10,
+    "damage": 3,
+    "speed": 2.1,
+    "trapDamage": 6,
+    "trapDurationMs": 4000,
+    "spritePath": null,
+    "_spriteNote": "TODO: grafika uciekającego wroga + grafika pułapki (osobny sprite)",
+    "isMiniboss": false,
+    "isBoss": false
+  },
+  {
+    "id": "miniboss_ogre",
+    "name": "Ogr (Miniboss)",
+    "behavior": "melee",
+    "hp": 140,
+    "damage": 16,
+    "speed": 1.2,
+    "contactDamageCooldownMs": 1000,
+    "spritePath": null,
+    "_spriteNote": "TODO: duża grafika ogra-minibossa, ok. 64x64px",
+    "isMiniboss": true,
+    "isBoss": false
+  },
+  {
+    "id": "boss_lich",
+    "name": "Lisz (Boss)",
+    "behavior": "boss",
+    "hp": 420,
+    "damage": 20,
+    "speed": 0.9,
+    "specialAttackCooldownMs": 6000,
+    "specialAttackType": "wave",
+    "specialAttackProjectiles": 12,
+    "spritePath": null,
+    "_spriteNote": "TODO: grafika bossa Lisza, ok. 96x96px, osobny pasek HP na dole ekranu",
+    "isMiniboss": false,
+    "isBoss": true
+  }
+]

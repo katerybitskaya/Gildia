@@ -1,0 +1,10 @@
+services:
+  gildia:
+    build: .
+    container_name: gildia-escape-wsiz
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    restart: unless-stopped
