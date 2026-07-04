@@ -65,7 +65,7 @@
     "specialAttackCooldownMs": 6000,
     "specialAttackType": "wave",
     "specialAttackProjectiles": 12,
-    "spritePath": "/sprites/BOSS.png",
+    "spritePath": "/sprites/BOSS.svg",
     "_spriteNote": "TODO: grafika bossa Lisza, ok. 96x96px, osobny pasek HP na dole ekranu",
     "isMiniboss": false,
     "isBoss": true
