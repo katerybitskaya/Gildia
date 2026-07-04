@@ -37,7 +37,7 @@
     "trapDamage": 6,
     "trapDurationMs": 4000,
     "spritePath": "/sprites/ghost_red_mushroom.png",
-    "trapSpritePath": "/sprites/boom.png",
+    "trapSpritePath": "/sprites/mushroom.png",
     "_spriteNote": "Grafika wroga i pułapki ustawione. Podmień trapSpritePath w tym pliku, jeśli chcesz inny obrazek miny.",
     "isMiniboss": false,
     "isBoss": false

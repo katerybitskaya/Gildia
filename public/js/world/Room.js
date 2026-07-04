@@ -57,7 +57,7 @@ class Room {
         x: mine.x,
         y: mine.y,
         damage: 15,
-        radius: 20,
+        radius: 36,
         expiresAt: Infinity,
         spritePath: '/sprites/boom.png'
       });
