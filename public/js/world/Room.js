@@ -17,7 +17,9 @@ class Room {
     this._type = layout.type;
     this._chestCount = layout.chestCount;
     this._enemySpawnDefs = layout.enemySpawns;
+    this._mineSpawnDefs = layout.mineSpawns || [];
     this._dropsKey = !!layout.dropsKey;
+    this._theme = layout.theme || null; // { floor, wall } - patrz data/roomThemes.json
 
     this._doors = layout.doors.map((d) => new Door(d));
     this._visited = false;
@@ -34,6 +36,7 @@ class Room {
   get chests() { return this._chests; }
   get traps() { return this._traps; }
   get dropsKey() { return this._dropsKey; }
+  get theme() { return this._theme; }
   get bounds() { return ROOM_BOUNDS; }
 
   get isCleared() {
@@ -46,6 +49,18 @@ class Room {
 
     for (const spawn of this._enemySpawnDefs) {
       this._enemies.push(EnemyFactory.create(spawn.enemyId, enemyDefs, spawn.x, spawn.y));
+    }
+    // Statyczne miny wygenerowane razem z pokojem (sekcja 3/4 info.md) - używają tego
+    // samego mechanizmu co pułapki zostawiane przez uciekającego wroga (Room.traps).
+    for (const mine of this._mineSpawnDefs) {
+      this._traps.push({
+        x: mine.x,
+        y: mine.y,
+        damage: 15,
+        radius: 20,
+        expiresAt: Infinity,
+        spritePath: '/sprites/boom.png'
+      });
     }
     for (let i = 0; i < this._chestCount; i += 1) {
       const pos = this._randomInteriorPosition();

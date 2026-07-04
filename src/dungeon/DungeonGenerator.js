@@ -110,6 +110,8 @@ class DungeonGenerator {
     bossRoom.type = RoomType.BOSS;
     bossRoom.chestCount = 0;
     bossRoom.enemySpawns = [{ enemyId: 'boss_lich', x: 400, y: 300 }];
+    bossRoom.mineSpawns = []; // bez min w pokoju bossa
+    bossRoom.theme = RoomFactory.pickTheme(RoomType.BOSS);
     for (const door of bossRoom.doors) {
       door.locked = true;
       const neighbor = Array.from(this._rooms.values()).find((r) => r.id === door.connectsTo);
@@ -123,6 +125,8 @@ class DungeonGenerator {
       room.type = RoomType.MINIBOSS;
       room.chestCount = 0;
       room.enemySpawns = [{ enemyId: 'miniboss_ogre', x: 400, y: 300 }];
+      room.mineSpawns = []; // bez min w pokoju minibossa
+      room.theme = RoomFactory.pickTheme(RoomType.MINIBOSS);
     }
 
     // Klucz do bossa wypada tylko z JEDNEGO, losowego minibossa (sekcja 5. info.md)

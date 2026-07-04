@@ -11,7 +11,9 @@ class Room {
     this._doors = []; // { direction, connectsTo, locked }
     this._chestCount = 0;
     this._enemySpawns = []; // { enemyId, x, y }
+    this._mineSpawns = []; // { x, y } - statyczne miny/pułapki wygenerowane razem z pokojem
     this._dropsKey = false; // true dla jednego, losowego pokoju miniboss
+    this._theme = null; // { floor, wall } - patrz data/roomThemes.json
   }
 
   get id() { return this._id; }
@@ -29,8 +31,14 @@ class Room {
   get enemySpawns() { return this._enemySpawns; }
   set enemySpawns(value) { this._enemySpawns = value; }
 
+  get mineSpawns() { return this._mineSpawns; }
+  set mineSpawns(value) { this._mineSpawns = value; }
+
   get dropsKey() { return this._dropsKey; }
   set dropsKey(value) { this._dropsKey = value; }
+
+  get theme() { return this._theme; }
+  set theme(value) { this._theme = value; }
 
   addDoor(direction, connectsTo, locked = false) {
     this._doors.push({ direction, connectsTo, locked });
@@ -50,7 +58,9 @@ class Room {
       doors: this._doors,
       chestCount: this._chestCount,
       enemySpawns: this._enemySpawns,
-      dropsKey: this._dropsKey
+      mineSpawns: this._mineSpawns,
+      dropsKey: this._dropsKey,
+      theme: this._theme
     };
   }
 }

@@ -1,0 +1,23 @@
+{
+  "_comment": "Motywy graficzne pokoi (floor = podłoga, wall = ściana). Pokój startowy ma ZAWSZE stały motyw. Pozostałe pokoje typu 'normal' losują jeden motyw z listy przy generowaniu labiryntu (raz na pokój, nie zmienia się przy ponownym wejściu). Dodawaj/zmieniaj kombinacje wg potrzeb - silnik po prostu odczyta je stąd.",
+  "start": {
+    "floor": "/sprites/floor_default.png",
+    "wall": "/sprites/room_1.png"
+  },
+  "normal": [
+    { "floor": "/sprites/floor1.png", "wall": "/sprites/room_2.png" },
+    { "floor": "/sprites/floor2.png", "wall": "/sprites/room_3.png" },
+    { "floor": "/sprites/floor3.png", "wall": "/sprites/room_4.png" },
+    { "floor": "/sprites/floor4.png", "wall": "/sprites/room_5.png" },
+    { "floor": "/sprites/floor1.png", "wall": "/sprites/room_6.png" },
+    { "floor": "/sprites/floor2.png", "wall": "/sprites/room_7.png" },
+    { "floor": "/sprites/floor3.png", "wall": "/sprites/room_8.png" },
+    { "floor": "/sprites/floor4.png", "wall": "/sprites/room_9.png" }
+  ],
+  "miniboss": [
+    { "floor": "/sprites/floor_default.png", "wall": "/sprites/room_9.png" }
+  ],
+  "boss": [
+    { "floor": "/sprites/floor_default.png", "wall": "/sprites/room_10_boss.png" }
+  ]
+}

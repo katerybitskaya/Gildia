@@ -22,7 +22,8 @@ class FleeState {
         y: enemy.y,
         damage: enemy.def.trapDamage || 5,
         radius: 18,
-        expiresAt: now + (enemy.def.trapDurationMs || 4000)
+        expiresAt: now + (enemy.def.trapDurationMs || 4000),
+        spritePath: enemy.def.trapSpritePath || null // TODO: patrz trapSpritePath w data/enemies.json
       });
     }
   }

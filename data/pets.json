@@ -9,16 +9,5 @@
     },
     "spritePath": "/sprites/blink_cat_tail_up.png",
     "_spriteNote": "TODO: grafika kotka, miniatura wyświetlana pomniejszona o 80% na pasku bocznym"
-  },
-  {
-    "id": "lucky_hamster",
-    "name": "Szczęśliwy Chomik",
-    "description": "Losowo chodzi po pokoju. Dotknięcie daje tymczasowy bonus do szansy na dodatkowy przedmiot ze skrzynki.",
-    "effect": {
-      "action": "extraChestChance",
-      "value": 0.1
-    },
-    "spritePath": null,
-    "_spriteNote": "TODO: grafika chomika, miniatura wyświetlana pomniejszona o 80% na pasku bocznym"
   }
 ]

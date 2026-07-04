@@ -363,18 +363,25 @@ class Game {
     const b = room.bounds;
     const tiles = this._sprites.tiles || {};
 
+    // Motyw konkretnego pokoju (data/roomThemes.json) ma pierwszeństwo przed
+    // globalnym, jednym motywem z data/sprites.json - dzięki temu pokój startowy
+    // zawsze wygląda tak samo, a zwykłe pokoje mają zróżnicowany wygląd.
+    const theme = room.theme || {};
+    const floorPath = theme.floor || tiles.floor;
+    const wallPath = theme.wall || tiles.wall;
+
     ctx.fillStyle = '#14141f';
     ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
     // Ściany - grafika rysowana jako "rama" pod podłogą, żeby nie trzeba było kaflować ręcznie
-    const wallImg = tiles.wall ? SpriteLoader.get(tiles.wall) : null;
+    const wallImg = wallPath ? SpriteLoader.get(wallPath) : null;
     if (wallImg) {
       const margin = 40;
       ctx.drawImage(wallImg, b.minX - margin, b.minY - margin, (b.maxX - b.minX) + margin * 2, (b.maxY - b.minY) + margin * 2);
     }
 
     // Podłoga
-    const floorImg = tiles.floor ? SpriteLoader.get(tiles.floor) : null;
+    const floorImg = floorPath ? SpriteLoader.get(floorPath) : null;
     if (floorImg) {
       ctx.drawImage(floorImg, b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
     } else {
@@ -422,10 +429,12 @@ class Game {
   _renderTraps(room) {
     const ctx = this._ctx;
     for (const trap of room.traps) {
-      ctx.beginPath();
-      ctx.arc(trap.x, trap.y, trap.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(155, 89, 182, 0.5)';
-      ctx.fill();
+      this._drawSprite(trap.spritePath, trap.x, trap.y, trap.radius * 2, trap.radius * 2, () => {
+        ctx.beginPath();
+        ctx.arc(trap.x, trap.y, trap.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(155, 89, 182, 0.5)';
+        ctx.fill();
+      });
     }
   }
 

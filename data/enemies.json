@@ -37,7 +37,8 @@
     "trapDamage": 6,
     "trapDurationMs": 4000,
     "spritePath": "/sprites/ghost_red_mushroom.png",
-    "_spriteNote": "TODO: grafika uciekającego wroga + grafika pułapki (osobny sprite)",
+    "trapSpritePath": "/sprites/boom.png",
+    "_spriteNote": "Grafika wroga i pułapki ustawione. Podmień trapSpritePath w tym pliku, jeśli chcesz inny obrazek miny.",
     "isMiniboss": false,
     "isBoss": false
   },
@@ -49,7 +50,7 @@
     "damage": 16,
     "speed": 1.2,
     "contactDamageCooldownMs": 1000,
-    "spritePath": null,
+    "spritePath": "/sprites/blink_cat.png",
     "_spriteNote": "TODO: duża grafika ogra-minibossa, ok. 64x64px",
     "isMiniboss": true,
     "isBoss": false
@@ -64,7 +65,7 @@
     "specialAttackCooldownMs": 6000,
     "specialAttackType": "wave",
     "specialAttackProjectiles": 12,
-    "spritePath": null,
+    "spritePath": "/sprites/BOSS.png",
     "_spriteNote": "TODO: grafika bossa Lisza, ok. 96x96px, osobny pasek HP na dole ekranu",
     "isMiniboss": false,
     "isBoss": true
